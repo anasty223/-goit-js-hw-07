@@ -6,14 +6,14 @@ import { galleryItems } from './gallery-items.js';
 
 const imageContainer = document.querySelector('.gallery');
 const cardsMarkup = createImagesCard(galleryItems);
-imageContainer.insertAdjacentHTML('beforeend',cardsMarkup)
+imageContainer.insertAdjacentHTML('beforeend', cardsMarkup)
 
-imageContainer.addEventListener('click',onContainerClick)
+imageContainer.addEventListener('click', onContainerClick)
 
 function createImagesCard(galleryItems) {
-    
+
     return galleryItems.map(({ preview, original, description }) => {
-       
+
         return `
      
 <div class="gallery__item">
@@ -28,17 +28,42 @@ function createImagesCard(galleryItems) {
 </div>
     `
     }).join('');
- 
+
 }
 
 function onContainerClick(evt) {
     evt.preventDefault();
-    
-const isGalleryImage = evt.target.classList.contains('gallery__image')
+
+    const isGalleryImage = evt.target.classList.contains('gallery__image')
     if (!isGalleryImage) {
         return;
     }
     const imageGal = evt.target;
-    console.log(imageGal);
 
+    const largeImg = imageGal.getAttribute('data-source');
+    console.log(largeImg)
 }
+
+
+
+const instance = basicLightbox.create(`
+<img srс="" alt="" width="800" height="600"/>`,
+  { onShow: (instance) => { window.addEventListener('keydown',onEscClose) }, onClose: (instance) => {window.removeEventListener('keydown',onEscClose)  } });
+  
+   
+
+const onEscClose = function (event) {
+
+  if (event.code === 'Escape') {
+    instance.close()
+
+     }
+}
+function openImg(event) {
+  instance.element().querySelector('img').src = event.target.dataset.source
+     instance.show();
+}
+imageContainer.addEventListener('click', openImg)
+// ====================================================
+
+
