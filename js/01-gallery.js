@@ -7,12 +7,12 @@ import { galleryItems } from './gallery-items.js';
 const imageContainer = document.querySelector('.gallery');
 const cardsMarkup = createImagesCard(galleryItems);
 imageContainer.insertAdjacentHTML('beforeend', cardsMarkup)
-
 imageContainer.addEventListener('click', onContainerClick)
+let currentIndex = 0;
 
 function createImagesCard(galleryItems) {
 
-    return galleryItems.map(({ preview, original, description }) => {
+    return galleryItems.map(({ preview, original, description },index) => {
 
         return `
      
@@ -21,6 +21,7 @@ function createImagesCard(galleryItems) {
     <img
       class="gallery__image"
       src="${preview}"
+      data-index="${index}"
       data-source="${original}"
       alt="${description}"
     />
@@ -38,10 +39,7 @@ function onContainerClick(evt) {
     if (!isGalleryImage) {
         return;
     }
-    const imageGal = evt.target;
-
-    const largeImg = imageGal.getAttribute('data-source');
-    console.log(largeImg)
+   
 }
 
 
@@ -57,11 +55,31 @@ const onEscClose = function (event) {
   if (event.code === 'Escape') {
     instance.close()
 
-     }
+  };
+  if (event.code === "ArrowLeft") {
+    
+    console.log('left')
+    currentIndex -= 1;
+      if (currentIndex <=0) {
+      currentIndex = galleryItems.length - 1;
+    }
+    instance.element().querySelector('img').src = galleryItems[currentIndex].original;
+  }
+  if (event.code === "ArrowRight") {
+    console.log("Right")
+    currentIndex += 1;
+    if (currentIndex >= galleryItems.length - 1) {
+      currentIndex = 0;
+    }
+     instance.element().querySelector('img').src = galleryItems[currentIndex].original;
+  }
 }
 function openImg(event) {
-  instance.element().querySelector('img').src = event.target.dataset.source
-     instance.show();
+currentIndex = Number(event.target.dataset.index);
+console.log(currentIndex);
+
+instance.element().querySelector('img').src = event.target.dataset.source
+instance.show();
 }
 imageContainer.addEventListener('click', openImg)
 // ====================================================
